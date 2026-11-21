@@ -24,6 +24,7 @@ Run locally:
 """
 
 import hashlib
+import random
 import os
 import re
 import sys
@@ -76,62 +77,106 @@ st.set_page_config(
 
 CSS = """
 <style>
-.block-container { padding-top: 1.4rem; max-width: 760px; }
-#MainMenu, footer { visibility: hidden; }
+:root { --ink:#0F172A; --mut:#64748B; --line:#E6EAF2; --brand:#4F46E5; --brand2:#06B6D4; }
+.stApp { background: #F6F8FC; }
+.block-container { padding-top: 1.2rem; max-width: 720px; }
+#MainMenu, footer, header [data-testid="stToolbar"] { visibility: hidden; }
 
-.qs-hero { text-align: center; padding: 1rem 0 0.4rem; }
-.qs-logo { font-size: 2.1rem; font-weight: 800; letter-spacing: .5px; }
-.qs-logo span { color: #22D3EE; }
-.qs-tagline { font-size: 1.3rem; font-weight: 700; margin-top: .2rem; }
-.qs-sub { color: #9FB0CC; max-width: 560px; margin: .5rem auto 0;
-          line-height: 1.55; font-size: .98rem; }
+/* ---------- hero ---------- */
+.qs-hero { padding: .6rem 0 .2rem; }
+.qs-brand { display:flex; align-items:center; gap:.55rem; font-weight:800;
+            font-size:1.15rem; color:var(--ink); }
+.qs-logo { width:34px; height:34px; border-radius:10px; display:grid;
+           place-items:center; color:#fff; font-size:1.05rem;
+           background:linear-gradient(135deg,var(--brand),var(--brand2)); }
+.qs-pill { margin-left:auto; font-size:.72rem; font-weight:600; color:var(--mut);
+           background:#fff; border:1px solid var(--line); padding:.25rem .65rem;
+           border-radius:999px; }
+.qs-eyebrow { margin-top:1.1rem; font-size:.74rem; font-weight:800;
+              letter-spacing:.12em; color:var(--brand); }
+.qs-hero h1 { font-size:2.15rem; line-height:1.12; font-weight:800;
+              letter-spacing:-.02em; color:var(--ink); margin:.25rem 0 0;
+              padding:0; }
+.qs-hero h1 span { background:linear-gradient(90deg,var(--brand),var(--brand2));
+                   -webkit-background-clip:text; background-clip:text;
+                   color:transparent; }
+.qs-sub { color:var(--mut); margin-top:.6rem; line-height:1.55; font-size:1rem; }
+.qs-trust { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.8rem; }
+.qs-trust span { background:#fff; border:1px solid var(--line); color:#334155;
+                 border-radius:999px; padding:.28rem .7rem; font-size:.8rem;
+                 font-weight:600; }
 
-.qs-card { background: #111A2E; border: 1px solid #1F2B45; color: #E6EDF7;
-           border-radius: 16px; padding: 1rem 1.1rem; margin: .6rem 0; }
-.qs-card h4 { margin: 0 0 .3rem; font-size: 1.02rem; }
-.qs-card p  { margin: 0; color: #B6C3DA; line-height: 1.5; font-size: .93rem; }
+/* ---------- cards ---------- */
+.qs-card { background:#fff; border:1px solid var(--line); color:var(--ink);
+           border-radius:18px; padding:1rem 1.1rem; margin:.6rem 0; }
+.qs-card h4 { margin:0 0 .3rem; font-size:1.02rem; color:var(--ink); }
+.qs-card p  { margin:0; color:#475569; line-height:1.55; font-size:.93rem; }
+.qs-tip { background:#EEF2FF; color:#3730A3; border-radius:14px;
+          padding:.75rem .9rem; margin:.7rem 0; font-size:.9rem; line-height:1.45; }
+.qs-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:.5rem;
+            margin:.8rem 0; }
+.qs-step { background:#fff; border:1px solid var(--line); border-radius:14px;
+           padding:.65rem .3rem; text-align:center; font-size:.8rem;
+           font-weight:700; color:#334155; }
+.qs-step b { display:block; font-size:1.2rem; color:var(--brand); }
 
-.qs-verdict { display: flex; align-items: center; gap: .9rem; color: #E6EDF7;
-              background: #111A2E; border: 1px solid var(--accent);
-              border-left: 6px solid var(--accent); border-radius: 16px;
-              padding: 1rem 1.1rem; margin-top: .6rem; }
-.qs-verdict-icon { font-size: 2rem; line-height: 1; }
-.qs-verdict-label { color: var(--accent); font-weight: 700;
-                    text-transform: uppercase; font-size: .78rem;
-                    letter-spacing: .09em; }
-.qs-verdict-head { font-size: 1.12rem; font-weight: 700; line-height: 1.3; }
-.qs-pct { margin-left: auto; font-size: 2rem; font-weight: 800;
-          color: var(--accent); }
+/* ---------- verdict ---------- */
+.qs-verdict { background:var(--bg); border:1px solid var(--bd); color:var(--fg);
+              border-radius:24px; padding:1.4rem 1.2rem 1.1rem; text-align:center;
+              margin-top:.6rem; }
+.qs-emoji { font-size:3rem; line-height:1.1; }
+.qs-verdict h2 { margin:.2rem 0 0; font-size:1.55rem; font-weight:800;
+                 color:var(--fg); padding:0; }
+.qs-verdict p { margin:.45rem auto 0; font-size:.95rem; line-height:1.5;
+                max-width:460px; color:var(--fg); opacity:.88; }
+.qs-badge { display:inline-block; margin-top:.8rem; padding:.28rem .8rem;
+            border-radius:999px; font-size:.75rem; font-weight:800;
+            letter-spacing:.06em; color:#fff; background:var(--accent); }
+.qs-meter { height:10px; border-radius:999px; position:relative;
+            margin:1.1rem .2rem .35rem;
+            background:linear-gradient(90deg,#22C55E,#FACC15,#EF4444); }
+.qs-meter i { position:absolute; top:-5px; width:20px; height:20px;
+              border-radius:50%; background:#fff; border:3px solid #0F172A;
+              transform:translateX(-50%); }
+.qs-meter-labels { display:flex; justify-content:space-between;
+                   font-size:.72rem; color:var(--mut); padding:0 .2rem; margin-top:.7rem; }
+.qs-meter-score { font-weight:800; color:var(--ink); }
 
-.qs-bar { height: 10px; background: #1F2B45; border-radius: 999px;
-          margin: .6rem 0 1rem; overflow: hidden; }
-.qs-bar > div { height: 100%; border-radius: 999px; }
+.qs-tiles { display:grid; grid-template-columns:repeat(3,1fr); gap:.6rem;
+            margin:.8rem 0; }
+.qs-tile { background:#fff; border:1px solid var(--line); color:var(--ink);
+           border-radius:14px; padding:.7rem .4rem; text-align:center; }
+.qs-tile-label { color:var(--mut); font-size:.72rem; letter-spacing:.05em;
+                 text-transform:uppercase; }
+.qs-tile-value { font-size:1.35rem; font-weight:800; margin-top:.1rem; }
 
-.qs-tiles { display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: .6rem; margin: .4rem 0 .8rem; }
-.qs-tile { background: #111A2E; border: 1px solid #1F2B45; color: #E6EDF7;
-           border-radius: 14px; padding: .7rem .5rem; text-align: center; }
-.qs-tile-label { color: #9FB0CC; font-size: .74rem; letter-spacing: .04em;
-                 text-transform: uppercase; }
-.qs-tile-value { font-size: 1.35rem; font-weight: 800; margin-top: .1rem; }
+.qs-chip { display:inline-block; background:#fff; border:1px solid var(--line);
+           border-radius:999px; padding:.25rem .75rem; margin:.15rem .3rem .15rem 0;
+           font-size:.85rem; color:#334155; font-weight:600; }
+.qs-footer { color:var(--mut); font-size:.8rem; text-align:center;
+             margin-top:1.6rem; line-height:1.5; }
 
-.qs-chip { display: inline-block; background: #162238;
-           border: 1px solid #25365A; border-radius: 999px;
-           padding: .25rem .75rem; margin: .15rem .3rem .15rem 0;
-           font-size: .85rem; color: #D6E2F5; }
-
-.qs-footer { color: #7F90AD; font-size: .8rem; text-align: center;
-             margin-top: 1.6rem; line-height: 1.5; }
-
-.stButton > button, .stDownloadButton > button {
-    border-radius: 12px; min-height: 2.8rem; }
+/* ---------- streamlit widgets ---------- */
+[data-testid="stFileUploaderDropzone"] { border:2px dashed #BAC5DD;
+    background:#fff; border-radius:22px; padding:1.6rem 1rem; }
+[data-testid="stFileUploaderDropzone"] button { border-radius:12px; }
+.stButton > button, .stDownloadButton > button, .stLinkButton > a {
+    border-radius:12px; min-height:2.8rem; font-weight:700; }
+.stButton > button[kind="primary"], .stLinkButton > a[kind="primary"] {
+    background:linear-gradient(135deg,var(--brand),#6D63F5); border:none; color:#fff; }
+.stTabs [data-baseweb="tab-list"] { gap:.3rem; background:#E4E9F2;
+    padding:4px; border-radius:14px; }
+.stTabs [data-baseweb="tab"] { border-radius:11px; padding:.45rem .9rem;
+    font-weight:700; }
+.stTabs [aria-selected="true"] { background:#fff; color:var(--brand); }
+.stTabs [data-baseweb="tab-highlight"], .stTabs [data-baseweb="tab-border"] {
+    display:none; }
 
 @media (max-width: 640px) {
-    .qs-logo { font-size: 1.8rem; }
-    .qs-tagline { font-size: 1.1rem; }
-    .qs-verdict { gap: .6rem; padding: .8rem; }
-    .qs-pct { font-size: 1.6rem; }
-    .qs-tile-value { font-size: 1.1rem; }
+    .qs-hero h1 { font-size:1.75rem; }
+    .qs-verdict h2 { font-size:1.3rem; }
+    .qs-tile-value { font-size:1.1rem; }
+    .qs-pill { display:none; }
 }
 </style>
 """
@@ -144,10 +189,11 @@ st.markdown(CSS, unsafe_allow_html=True)
 
 BANDS = {
     "Low": {
-        "color": "#22C55E",
-        "icon": "✅",
+        "color": "#16A34A", "bg": "#ECFDF3", "bd": "#BBF7D0", "fg": "#14532D",
+        "icon": "😌",
         "title": "Low risk",
-        "headline": "No major threats detected",
+        "headline": "All clear. Scan away.",
+        "sub": "We did not find any major red flags in this QR code.",
         "advice": (
             "No major warning signs were found. This does not guarantee "
             "safety: no tool can. Stay alert, especially before paying "
@@ -155,10 +201,11 @@ BANDS = {
         ),
     },
     "Medium": {
-        "color": "#F59E0B",
-        "icon": "⚠️",
+        "color": "#D97706", "bg": "#FFF7E6", "bd": "#FDE68A", "fg": "#7C2D12",
+        "icon": "🤔",
         "title": "Medium risk",
-        "headline": "Suspicious. Verify before you continue",
+        "headline": "Hmm, something feels off.",
+        "sub": "A few warning signs showed up. Take a moment before you go on.",
         "advice": (
             "Some warning signs were found. Check where this QR code came "
             "from and confirm it with the sender or shop before opening "
@@ -166,10 +213,11 @@ BANDS = {
         ),
     },
     "High": {
-        "color": "#EF4444",
-        "icon": "⛔",
+        "color": "#DC2626", "bg": "#FEF0F0", "bd": "#FECACA", "fg": "#7F1D1D",
+        "icon": "🚨",
         "title": "High risk",
-        "headline": "Dangerous. Do not open or pay",
+        "headline": "Hold up. This QR is a trap.",
+        "sub": "Good thing you checked first. Please do not open or pay.",
         "advice": (
             "Strong warning signs were found. Do not open the link, make "
             "a payment or enter any details. If it came from a message "
@@ -177,6 +225,15 @@ BANDS = {
         ),
     },
 }
+
+TIPS = [
+    "Scammers stick fake QR codes over real ones at shops and parking meters.",
+    "You never need to scan a QR code to receive money. Only paying needs a scan.",
+    "A real bank will never ask for your OTP or PIN through a QR code.",
+    "Got a QR code in a random message? Treat it like a stranger's link.",
+    "A QR code is just a link in disguise. You cannot read it with your eyes.",
+    "If a QR sticker looks pasted on top of another one, do not scan it.",
+]
 
 BLACKLIST_LABELS = {
     "listed": ("🔴", "Listed", "Confirmed match in a phishing blacklist."),
@@ -515,19 +572,20 @@ def render_verdict(result):
     band = result.get("risk_band")
     cfg = BANDS.get(band, BANDS["Medium"])
     pct = _pct(result["final_score"])
+    dot = min(97, max(3, pct))
 
     st.markdown(
         f"""
-        <div class="qs-verdict" style="--accent:{cfg['color']}">
-          <div class="qs-verdict-icon">{cfg['icon']}</div>
-          <div>
-            <div class="qs-verdict-label">{cfg['title']}</div>
-            <div class="qs-verdict-head">{cfg['headline']}</div>
-          </div>
-          <div class="qs-pct">{pct}%</div>
-        </div>
-        <div class="qs-bar">
-          <div style="width:{pct}%;background:{cfg['color']}"></div>
+        <div class="qs-verdict" style="--bg:{cfg['bg']};--bd:{cfg['bd']};
+             --fg:{cfg['fg']};--accent:{cfg['color']}">
+          <div class="qs-emoji">{cfg['icon']}</div>
+          <h2>{cfg['headline']}</h2>
+          <p>{cfg['sub']}</p>
+          <span class="qs-badge">{cfg['title'].upper()}</span>
+          <div class="qs-meter"><i style="left:{dot}%"></i></div>
+          <div class="qs-meter-labels"><span>Safer</span>
+            <span class="qs-meter-score">Risk score {pct} / 100</span>
+            <span>Riskier</span></div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -596,7 +654,7 @@ def render_info_chips(payload_type, status):
 
 
 def render_reasons(reasons):
-    st.markdown("#### Why this result")
+    st.markdown("#### 🔎 Why we say this")
 
     if not reasons:
         st.write("No specific warning signs were reported.")
@@ -608,7 +666,7 @@ def render_reasons(reasons):
 def render_upi_panel(payload_result):
     fields = payload_result.get("fields") or {}
 
-    st.markdown("#### Payment details in this QR")
+    st.markdown("#### 💸 Payment details in this QR")
 
     payee_id = fields.get("pa") or "Not specified"
     name = fields.get("pn") or "Not specified"
@@ -659,7 +717,7 @@ def render_link_panel(payload, payload_type, band):
 
     url, host = _openable_url(payload)
 
-    st.markdown("#### Link details")
+    st.markdown("#### 🔗 Link details")
 
     if host is None:
         st.warning(
@@ -698,7 +756,7 @@ def render_link_panel(payload, payload_type, band):
         allowed = True
 
     if allowed and hasattr(st, "link_button"):
-        st.link_button("Open link in a new tab", url)
+        st.link_button("Open link in a new tab", url, type="primary")
     elif allowed:
         st.caption("Copy the link above and open it in your browser.")
 
@@ -751,7 +809,7 @@ def render_result(payload, non_utf8, payload_result, result,
             "so it is not treated as safe."
         )
 
-    st.markdown("#### What this QR contains")
+    st.markdown("#### 📦 What is inside this QR")
     st.code(safe_display(payload), language=None)
     st.caption("Shown as plain text. QR Shield never opens or runs it for you.")
 
@@ -762,7 +820,22 @@ def render_result(payload, non_utf8, payload_result, result,
 
     render_link_panel(payload, payload_type, result.get("risk_band"))
 
-    with st.expander("Image analysis details"):
+    if result.get("risk_band") == "High":
+        st.markdown(
+            """
+            <div class="qs-card"><h4>What to do now</h4>
+            <p>1. Do not enter any password, OTP or PIN.<br>
+            2. If it was a sticker, tell the shop owner.<br>
+            3. If it came in a message, delete it and report it.</p></div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    if st.button("🔄 Scan another QR code", use_container_width=True):
+        st.session_state["scan_round"] = st.session_state.get("scan_round", 0) + 1
+        st.rerun()
+
+    with st.expander("🖼️ Image analysis details"):
         render_image_panel(crop, overlay, result.get("image_risk_score"), image_note)
 
 
@@ -783,7 +856,7 @@ def process_image(data):
     st.image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB),
              caption="Your image", width=260)
 
-    with st.spinner("Looking for QR codes..."):
+    with st.spinner("Reading the QR code..."):
         codes = detect_qr_codes(img)
 
     if not codes:
@@ -820,7 +893,7 @@ def process_image(data):
 
     # Branch B: payload analysis
     try:
-        with st.spinner("Checking what the QR code contains..."):
+        with st.spinner("Checking the link and content..."):
             payload_result = cached_payload_analysis(payload)
     except Exception:
         st.error(
@@ -834,7 +907,7 @@ def process_image(data):
     # Branch A: image analysis (optional)
     crop = crop_qr(img, code["polygon"], code["rect"])
 
-    with st.spinner("Checking the QR image..."):
+    with st.spinner("Inspecting the picture for tampering..."):
         image_score, overlay, image_note = run_image_analysis(crop)
 
     # Fusion
@@ -853,19 +926,23 @@ def process_image(data):
 
 
 def scan_page():
+    round_id = st.session_state.get("scan_round", 0)
+
     mode = st.radio(
         "How do you want to scan?",
-        ["Upload image", "Use camera"],
+        ["📁 Upload image", "📷 Use camera"],
         horizontal=True,
         label_visibility="collapsed",
+        key=f"mode_{round_id}",
     )
 
     data = None
 
-    if mode == "Upload image":
+    if mode.endswith("Upload image"):
         uploaded = st.file_uploader(
-            "Upload a QR code image (PNG or JPG)",
+            "Drop a QR photo or screenshot here (PNG or JPG, up to 5 MB)",
             type=["png", "jpg", "jpeg"],
+            key=f"upload_{round_id}",
         )
         if uploaded is not None:
             data = uploaded.getvalue()
@@ -874,18 +951,31 @@ def scan_page():
             "Hold the QR code steady, fill the frame, then take the photo. "
             "Your browser will ask for camera permission."
         )
-        photo = st.camera_input("Take a photo of the QR code")
+        photo = st.camera_input(
+            "Take a photo of the QR code", key=f"camera_{round_id}"
+        )
         if photo is not None:
             data = photo.getvalue()
 
     if data is not None:
         process_image(data)
     else:
+        if "tip" not in st.session_state:
+            st.session_state["tip"] = random.choice(TIPS)
+
         st.markdown(
-            """
-            <div class="qs-card"><h4>Not sure about a QR code?</h4>
-            <p>Upload a screenshot or photo, and QR Shield will tell you if
-            it looks safe, suspicious or dangerous, and why.</p></div>
+            f"""
+            <div class="qs-steps">
+              <div class="qs-step"><b>1</b>Add a photo</div>
+              <div class="qs-step"><b>2</b>We check it</div>
+              <div class="qs-step"><b>3</b>Scan safely</div>
+            </div>
+            <div class="qs-tip">💡 <b>Did you know?</b> {st.session_state['tip']}</div>
+            <span class="qs-chip">🔗 Links</span>
+            <span class="qs-chip">💸 UPI payments</span>
+            <span class="qs-chip">📶 Wi-Fi</span>
+            <span class="qs-chip">📇 Contacts</span>
+            <span class="qs-chip">📝 Text</span>
             """,
             unsafe_allow_html=True,
         )
@@ -944,17 +1034,21 @@ def main():
     st.markdown(
         """
         <div class="qs-hero">
-          <div class="qs-logo">🛡️ QR <span>Shield</span></div>
-          <div class="qs-tagline">Scan Smart. Stay Safe.</div>
-          <div class="qs-sub">Check a QR code for phishing links, fake
-          payment requests and tampering, before you open it or pay.</div>
+          <div class="qs-brand"><div class="qs-logo">🛡️</div>QR Shield
+            <span class="qs-pill">🔒 Photos are not stored</span></div>
+          <div class="qs-eyebrow">FREE QR SCAM CHECKER</div>
+          <h1>Think before you <span>scan.</span></h1>
+          <div class="qs-sub">Every QR code looks innocent. Not every QR code is.
+            Check it in one second, before it checks your bank account.</div>
+          <div class="qs-trust"><span>⚡ Instant</span><span>🆓 Free</span>
+            <span>👤 No sign-up</span></div>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
     scan_tab, how_tab, about_tab = st.tabs(
-        ["🔍 Scan QR", "⚙️ How it works", "ℹ️ About"]
+        ["🔍 Scan", "⚙️ How it works", "ℹ️ About"]
     )
 
     with scan_tab:
@@ -968,8 +1062,8 @@ def main():
 
     st.markdown(
         """
-        <div class="qs-footer">QR Shield gives advice only and cannot
-        guarantee safety.<br>Never share OTPs or PINs, and never scan to
+        <div class="qs-footer">Scan smart. Stay safe.<br>QR Shield gives advice only and cannot
+        guarantee safety. Never share OTPs or PINs, and never scan to
         receive money.</div>
         """,
         unsafe_allow_html=True,
