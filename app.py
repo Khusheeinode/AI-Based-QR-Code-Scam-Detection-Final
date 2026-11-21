@@ -118,7 +118,7 @@ CSS = """
 /* ---------- verdict ---------- */
 .qs-verdict { background:var(--bg); border:1px solid var(--bd); color:var(--fg);
               border-radius:24px; padding:1.4rem 1.2rem 1.1rem; text-align:center;
-              margin-top:.6rem; }
+              margin:.6rem 0 .9rem; }
 .qs-emoji { font-size:3rem; line-height:1.1; }
 .qs-verdict h2 { margin:.2rem 0 0; font-size:1.55rem; font-weight:800;
                  color:var(--fg); padding:0; }
@@ -296,9 +296,19 @@ def load_cnn_model():
         return None, type(exc).__name__
 
 
-@st.cache_data(show_spinner=False, ttl=300, max_entries=64)
+def _phishtank_key():
+    """Optional PhishTank key from Streamlit secrets or an env variable."""
+    key = None
+    try:
+        key = st.secrets.get("PHISHTANK_API_KEY")
+    except Exception:
+        key = None
+    return key or os.getenv("PHISHTANK_API_KEY") or None
+
+
+@st.cache_data(show_spinner=False, ttl=60, max_entries=64)
 def cached_payload_analysis(payload):
-    return analyze_payload(payload)
+    return analyze_payload(payload, phishtank_api_key=_phishtank_key())
 
 
 # --------------------------------------------------
@@ -562,9 +572,24 @@ def _pct(value):
 
 def render_verdict(result):
     band = result.get("risk_band")
-    cfg = BANDS.get(band, BANDS["Medium"])
+    cfg = dict(BANDS.get(band, BANDS["Medium"]))
     pct = _pct(result["final_score"])
     dot = min(97, max(3, pct))
+
+    ptype = result.get("payload_type")
+
+    if band == "Low" and ptype == "upi":
+        cfg["headline"] = "No red flags found."
+        cfg["sub"] = (
+            "The QR itself looks normal. Always confirm the payee name "
+            "in your UPI app before you pay."
+        )
+    elif band == "Low" and ptype != "url":
+        cfg["headline"] = "Nothing suspicious found."
+        cfg["sub"] = (
+            "This kind of content cannot be fully verified, so please "
+            "check it yourself before you trust it."
+        )
 
     st.markdown(
         f"""
@@ -673,7 +698,7 @@ def render_upi_panel(payload_result):
             f"- **Payee UPI ID:** {md_escape(str(payee_id)[:80])}",
             f"- **Payee name:** {md_escape(str(name)[:80])}",
             f"- **Amount:** {md_escape(str(amount_text)[:30])}",
-            f"- **Currency:** {md_escape(str(currency)[:10])}",
+            f"- **Currency:** {md_escape(str(currency)[:20])}",
             f"- **Note:** {md_escape(str(note)[:100])}",
         ])
     )
