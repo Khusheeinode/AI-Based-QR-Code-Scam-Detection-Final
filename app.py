@@ -77,47 +77,42 @@ st.set_page_config(
 
 CSS = """
 <style>
-:root { --ink:#0F172A; --mut:#64748B; --line:#E6EAF2; --brand:#4F46E5; --brand2:#06B6D4; }
-.stApp { background: #F6F8FC; }
-.block-container { padding-top: 1.2rem; max-width: 720px; }
-#MainMenu, footer, header [data-testid="stToolbar"] { visibility: hidden; }
+:root{--ink:#E6EDF7;--mut:#9FB0CC;--line:#1F2B45;--card:#111A2E;--brand:#22D3EE;--brand2:#6366F1}
+.qs-hero{text-align:center;padding:.4rem 0 .2rem}
+.qs-logo-wrap{position:relative;width:84px;height:84px;margin:0 auto}
+.qs-ring{position:absolute;inset:-5px;border-radius:50%;background:conic-gradient(from 0deg,#22D3EE,#6366F1,#A78BFA,#22D3EE);animation:qs-spin 4s linear infinite;filter:blur(.3px)}
+.qs-glow{position:absolute;inset:-16px;border-radius:50%;background:radial-gradient(circle,rgba(34,211,238,.45),transparent 70%);animation:qs-pulse 2.6s ease-in-out infinite}
+.qs-logo{position:absolute;inset:0;border-radius:50%;background:#0B1220;display:grid;place-items:center;font-size:2.3rem;overflow:hidden}
+.qs-scan{position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#22D3EE,transparent);box-shadow:0 0 12px 3px rgba(34,211,238,.7);animation:qs-sweep 2.2s ease-in-out infinite}
+.qs-title{margin-top:1.1rem;font-size:2.3rem;font-weight:800;letter-spacing:-.02em;line-height:1.15;background:linear-gradient(90deg,#fff 0%,#22D3EE 35%,#A5B4FC 65%,#fff 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:qs-shimmer 4s linear infinite}
+.qs-pill{display:inline-block;margin-top:.6rem;font-size:.74rem;font-weight:600;color:#BFE9F5;background:rgba(255,255,255,.08);padding:.25rem .7rem;border-radius:999px}
+.qs-eyebrow{margin-top:1.2rem;font-size:.74rem;font-weight:800;letter-spacing:.14em;color:var(--brand)}
+.qs-hero h1{font-size:2rem;line-height:1.12;font-weight:800;letter-spacing:-.02em;color:var(--ink);margin:.3rem 0 0;padding:0}
+.qs-hero h1 span{background:linear-gradient(90deg,var(--brand),#A5B4FC);-webkit-background-clip:text;background-clip:text;color:transparent}
+.qs-sub{color:var(--mut);margin:.7rem auto 0;line-height:1.55;font-size:.98rem;max-width:520px}
+.qs-trust{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-top:.9rem}
+.qs-trust span{background:#162238;border:1px solid #25365A;color:#D6E2F5;border-radius:999px;padding:.28rem .7rem;font-size:.8rem;font-weight:600}
+@keyframes qs-spin{to{transform:rotate(360deg)}}
+@keyframes qs-pulse{0%,100%{opacity:.5;transform:scale(.95)}50%{opacity:1;transform:scale(1.08)}}
+@keyframes qs-sweep{0%{top:8%}50%{top:88%}100%{top:8%}}
+@keyframes qs-shimmer{to{background-position:-250% 0}}
+@media (prefers-reduced-motion:reduce){.qs-ring,.qs-glow,.qs-scan,.qs-title{animation:none}}
 
-/* ---------- hero ---------- */
-.qs-hero { padding: .6rem 0 .2rem; }
-.qs-brand { display:flex; align-items:center; gap:.55rem; font-weight:800;
-            font-size:1.15rem; color:var(--ink); }
-.qs-logo { width:34px; height:34px; border-radius:10px; display:grid;
-           place-items:center; color:#fff; font-size:1.05rem;
-           background:linear-gradient(135deg,var(--brand),var(--brand2)); }
-.qs-pill { margin-left:auto; font-size:.72rem; font-weight:600; color:var(--mut);
-           background:#fff; border:1px solid var(--line); padding:.25rem .65rem;
-           border-radius:999px; }
-.qs-eyebrow { margin-top:1.1rem; font-size:.74rem; font-weight:800;
-              letter-spacing:.12em; color:var(--brand); }
-.qs-hero h1 { font-size:2.15rem; line-height:1.12; font-weight:800;
-              letter-spacing:-.02em; color:var(--ink); margin:.25rem 0 0;
-              padding:0; }
-.qs-hero h1 span { background:linear-gradient(90deg,var(--brand),var(--brand2));
-                   -webkit-background-clip:text; background-clip:text;
-                   color:transparent; }
-.qs-sub { color:var(--mut); margin-top:.6rem; line-height:1.55; font-size:1rem; }
-.qs-trust { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.8rem; }
-.qs-trust span { background:#fff; border:1px solid var(--line); color:#334155;
-                 border-radius:999px; padding:.28rem .7rem; font-size:.8rem;
-                 font-weight:600; }
+.stApp { background:#0B1220; }
+.block-container { padding-top:3.6rem; max-width:720px; }
+#MainMenu, footer { visibility:hidden; }
 
 /* ---------- cards ---------- */
-.qs-card { background:#fff; border:1px solid var(--line); color:var(--ink);
+.qs-card { background:var(--card); border:1px solid var(--line); color:var(--ink);
            border-radius:18px; padding:1rem 1.1rem; margin:.6rem 0; }
 .qs-card h4 { margin:0 0 .3rem; font-size:1.02rem; color:var(--ink); }
-.qs-card p  { margin:0; color:#475569; line-height:1.55; font-size:.93rem; }
-.qs-tip { background:#EEF2FF; color:#3730A3; border-radius:14px;
+.qs-card p  { margin:0; color:#B6C3DA; line-height:1.55; font-size:.93rem; }
+.qs-tip { background:#17224A; color:#C7D2FE; border-radius:14px;
           padding:.75rem .9rem; margin:.7rem 0; font-size:.9rem; line-height:1.45; }
-.qs-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:.5rem;
-            margin:.8rem 0; }
-.qs-step { background:#fff; border:1px solid var(--line); border-radius:14px;
+.qs-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:.5rem; margin:.8rem 0; }
+.qs-step { background:var(--card); border:1px solid var(--line); border-radius:14px;
            padding:.65rem .3rem; text-align:center; font-size:.8rem;
-           font-weight:700; color:#334155; }
+           font-weight:700; color:#C7D3E8; }
 .qs-step b { display:block; font-size:1.2rem; color:var(--brand); }
 
 /* ---------- verdict ---------- */
@@ -128,7 +123,7 @@ CSS = """
 .qs-verdict h2 { margin:.2rem 0 0; font-size:1.55rem; font-weight:800;
                  color:var(--fg); padding:0; }
 .qs-verdict p { margin:.45rem auto 0; font-size:.95rem; line-height:1.5;
-                max-width:460px; color:var(--fg); opacity:.88; }
+                max-width:460px; color:var(--fg); opacity:.9; }
 .qs-badge { display:inline-block; margin-top:.8rem; padding:.28rem .8rem;
             border-radius:999px; font-size:.75rem; font-weight:800;
             letter-spacing:.06em; color:#fff; background:var(--accent); }
@@ -136,47 +131,44 @@ CSS = """
             margin:1.1rem .2rem .35rem;
             background:linear-gradient(90deg,#22C55E,#FACC15,#EF4444); }
 .qs-meter i { position:absolute; top:-5px; width:20px; height:20px;
-              border-radius:50%; background:#fff; border:3px solid #0F172A;
+              border-radius:50%; background:#fff; border:3px solid #0B1220;
               transform:translateX(-50%); }
 .qs-meter-labels { display:flex; justify-content:space-between;
                    font-size:.72rem; color:var(--mut); padding:0 .2rem; margin-top:.7rem; }
-.qs-meter-score { font-weight:800; color:var(--ink); }
+.qs-meter-score { font-weight:800; color:#fff; }
 
-.qs-tiles { display:grid; grid-template-columns:repeat(3,1fr); gap:.6rem;
-            margin:.8rem 0; }
-.qs-tile { background:#fff; border:1px solid var(--line); color:var(--ink);
+.qs-tiles { display:grid; grid-template-columns:repeat(3,1fr); gap:.6rem; margin:.8rem 0; }
+.qs-tile { background:var(--card); border:1px solid var(--line); color:var(--ink);
            border-radius:14px; padding:.7rem .4rem; text-align:center; }
-.qs-tile-label { color:var(--mut); font-size:.72rem; letter-spacing:.05em;
-                 text-transform:uppercase; }
+.qs-tile-label { color:var(--mut); font-size:.72rem; letter-spacing:.05em; text-transform:uppercase; }
 .qs-tile-value { font-size:1.35rem; font-weight:800; margin-top:.1rem; }
 
-.qs-chip { display:inline-block; background:#fff; border:1px solid var(--line);
+.qs-chip { display:inline-block; background:#162238; border:1px solid #25365A;
            border-radius:999px; padding:.25rem .75rem; margin:.15rem .3rem .15rem 0;
-           font-size:.85rem; color:#334155; font-weight:600; }
-.qs-footer { color:var(--mut); font-size:.8rem; text-align:center;
+           font-size:.85rem; color:#D6E2F5; font-weight:600; }
+.qs-footer { color:#7F90AD; font-size:.8rem; text-align:center;
              margin-top:1.6rem; line-height:1.5; }
 
 /* ---------- streamlit widgets ---------- */
-[data-testid="stFileUploaderDropzone"] { border:2px dashed #BAC5DD;
-    background:#fff; border-radius:22px; padding:1.6rem 1rem; }
+[data-testid="stFileUploaderDropzone"] { border:2px dashed #2B3C63;
+    background:var(--card); border-radius:22px; padding:1.6rem 1rem; }
 [data-testid="stFileUploaderDropzone"] button { border-radius:12px; }
 .stButton > button, .stDownloadButton > button, .stLinkButton > a {
     border-radius:12px; min-height:2.8rem; font-weight:700; }
-.stButton > button[kind="primary"], .stLinkButton > a[kind="primary"] {
-    background:linear-gradient(135deg,var(--brand),#6D63F5); border:none; color:#fff; }
-.stTabs [data-baseweb="tab-list"] { gap:.3rem; background:#E4E9F2;
-    padding:4px; border-radius:14px; }
-.stTabs [data-baseweb="tab"] { border-radius:11px; padding:.45rem .9rem;
-    font-weight:700; }
-.stTabs [aria-selected="true"] { background:#fff; color:var(--brand); }
-.stTabs [data-baseweb="tab-highlight"], .stTabs [data-baseweb="tab-border"] {
-    display:none; }
+.stLinkButton > a { background:linear-gradient(135deg,#6366F1,#22D3EE);
+    border:none; color:#fff; }
+.stTabs [data-baseweb="tab-list"] { gap:.3rem; background:#111A2E;
+    padding:4px; border-radius:14px; border:1px solid var(--line); }
+.stTabs [data-baseweb="tab"] { border-radius:11px; padding:.45rem .9rem; font-weight:700; }
+.stTabs [aria-selected="true"] { background:#1B2A4A; color:#67E8F9; }
+.stTabs [data-baseweb="tab-highlight"], .stTabs [data-baseweb="tab-border"] { display:none; }
 
 @media (max-width: 640px) {
-    .qs-hero h1 { font-size:1.75rem; }
+    .block-container { padding-top:3.2rem; }
+    .qs-title { font-size:1.9rem; }
+    .qs-hero h1 { font-size:1.6rem; }
     .qs-verdict h2 { font-size:1.3rem; }
     .qs-tile-value { font-size:1.1rem; }
-    .qs-pill { display:none; }
 }
 </style>
 """
@@ -189,7 +181,7 @@ st.markdown(CSS, unsafe_allow_html=True)
 
 BANDS = {
     "Low": {
-        "color": "#16A34A", "bg": "#ECFDF3", "bd": "#BBF7D0", "fg": "#14532D",
+        "color": "#16A34A", "bg": "#0E2A1E", "bd": "#14532D", "fg": "#BBF7D0",
         "icon": "😌",
         "title": "Low risk",
         "headline": "All clear. Scan away.",
@@ -201,7 +193,7 @@ BANDS = {
         ),
     },
     "Medium": {
-        "color": "#D97706", "bg": "#FFF7E6", "bd": "#FDE68A", "fg": "#7C2D12",
+        "color": "#D97706", "bg": "#2B2110", "bd": "#78350F", "fg": "#FDE68A",
         "icon": "🤔",
         "title": "Medium risk",
         "headline": "Hmm, something feels off.",
@@ -213,7 +205,7 @@ BANDS = {
         ),
     },
     "High": {
-        "color": "#DC2626", "bg": "#FEF0F0", "bd": "#FECACA", "fg": "#7F1D1D",
+        "color": "#DC2626", "bg": "#2A1117", "bd": "#7F1D1D", "fg": "#FECACA",
         "icon": "🚨",
         "title": "High risk",
         "headline": "Hold up. This QR is a trap.",
@@ -1034,8 +1026,10 @@ def main():
     st.markdown(
         """
         <div class="qs-hero">
-          <div class="qs-brand"><div class="qs-logo">🛡️</div>QR Shield
-            <span class="qs-pill">🔒 Photos are not stored</span></div>
+          <div class="qs-logo-wrap"><div class="qs-glow"></div><div class="qs-ring"></div>
+            <div class="qs-logo">🛡️<i class="qs-scan"></i></div></div>
+          <div class="qs-title">QR Shield</div>
+          <div class="qs-pill">🔒 Photos are not stored</div>
           <div class="qs-eyebrow">FREE QR SCAM CHECKER</div>
           <h1>Think before you <span>scan.</span></h1>
           <div class="qs-sub">Every QR code looks innocent. Not every QR code is.
